@@ -37,7 +37,7 @@ Khadra is an Android application that connects volunteers with plant irrigation 
     - Select "Open an Existing Project"
     - Choose the cloned directory
 
-3**Build and Run**
+3. **Build and Run**
     - Click the ▶️ Run button in Android Studio
     - Choose a connected device or emulator
 
