@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,9 +37,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             KhadraTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // TODO 0: Call the UI composable function
-                    //FirstUI(modifier = Modifier.padding(innerPadding))
-                    Greeting(name = "Amara", modifier = Modifier.padding(innerPadding))
+                    FirstUI(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -55,22 +54,22 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun FirstUI(modifier: Modifier = Modifier) {
-    // TODO 1: Create state variables for text input and items list
-
+    var searchText by remember { mutableStateOf("") }
+    val khadraItems = remember { mutableStateListOf<String>() }
+    var searchQuery by remember { mutableStateOf("") }
     Column(
         modifier = modifier
-            .padding(25.dp)
+            .padding(23.dp)
             .fillMaxSize()
     ) {
         SearchInputBar(
-            textValue = "", // TODO 2: Connect to state
-            onTextValueChange = { /* TODO 3: Update text state */ },
-            onAddItem = { /* TODO 4: Add item to list */ },
-            onSearch = { /* TODO 5: Implement search functionality */ }
+            textValue = searchText,
+            onTextValueChange = { newText -> searchText = newText},
+            onAddItem = {khadraItems.add(searchText); searchText = ""},
+            onSearch = {searchQuery = searchText}
         )
-
-        // TODO 6: Display list of items using CardsList composable
-        CardsList(emptyList())
+        CardsList( displayedItems = if (searchQuery.isEmpty()) khadraItems
+        else khadraItems.filter { it.contains(searchQuery, ignoreCase = true) })
     }
 }
 
@@ -78,8 +77,8 @@ fun FirstUI(modifier: Modifier = Modifier) {
 fun SearchInputBar(
     textValue: String,
     onTextValueChange: (String) -> Unit,
-    onAddItem: (String) -> Unit,
-    onSearch: (String) -> Unit
+    onAddItem: () -> Unit,
+    onSearch: () -> Unit
 ) {
     Column {
         TextField(
@@ -88,18 +87,17 @@ fun SearchInputBar(
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text("Enter text...") }
         )
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Button(onClick = { /* TODO 7: Handle add button click */ }) {
+            Button(onClick = onAddItem ) {
                 Text("Add")
             }
 
-            Button(onClick = { /* TODO 8: Handle search button click */ }) {
+            Button(onClick = onSearch) {
                 Text("Search")
             }
         }
@@ -108,9 +106,7 @@ fun SearchInputBar(
 
 @Composable
 fun CardsList(displayedItems: List<String>) {
-    // TODO 9: Implement LazyColumn to display items
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        // TODO 10: Create cards for each item in the list
         items(displayedItems) { item ->
             Card(
                 modifier = Modifier
@@ -118,7 +114,7 @@ fun CardsList(displayedItems: List<String>) {
                     .padding(vertical = 4.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
-                Text(text = "Sample Item", modifier = Modifier.padding(16.dp))
+                Text(text = "$item", modifier = Modifier.padding(16.dp))
             }
         }
     }

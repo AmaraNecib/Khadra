@@ -18,7 +18,7 @@ val PineGreen = Color(0xFF689F38)         // Dark theme secondary - Muted green
 val OakBrown = Color(0xFF6D4C41)          // Dark theme tertiary - Rich brown
 
 // Neutral Colors
-val WheatYellow = Color(0xFFFFF8E1)       // Background color - Light beige
+val WheatYellow = Color(0xFFFFFFFF)       // Background color - Light beige
 val SoilGray = Color(0xFF757575)          // Text/icon color - Earthy gray
 
 // Accent Colors
