@@ -56,7 +56,7 @@ Complete the implementation of a simple list management app with search function
 
 ### 1. State Variables
 ```kotlin
-// In FirstUI composable
+ In FirstUI composable
 var textValue by remember { mutableStateOf("") }
 val allItems = remember { mutableStateListOf<String>() }
 var searchQuery by remember { mutableStateOf("") }
