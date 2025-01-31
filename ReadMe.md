@@ -2,7 +2,7 @@
 
 [![Kotlin Version](https://img.shields.io/badge/Kotlin-2.0.0-blue.svg)](https://kotlinlang.org)
 [![Compose Version](https://img.shields.io/badge/Jetpack%20Compose-1.10.0-brightgreen)](https://developer.android.com/jetpack/compose)
-
+#king
 Khadra is an Android application that connects volunteers with plant irrigation opportunities, enabling community-driven plant care through scheduling and tracking of watering activities.
 
 ## Features ✨
