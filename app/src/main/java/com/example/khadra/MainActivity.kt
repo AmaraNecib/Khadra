@@ -1,125 +1,192 @@
 package com.example.khadra
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.activity.viewModels
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.khadra.ui.theme.GreenJc
 import com.example.khadra.ui.theme.KhadraTheme
 
 class MainActivity : ComponentActivity() {
+    private val viewModel: ItemViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             KhadraTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // TODO 0: Call the UI composable function
-                    //FirstUI(modifier = Modifier.padding(innerPadding))
-                    Greeting(name = "Amara", modifier = Modifier.padding(innerPadding))
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+
+                    ) {
+                    MyTopAppBar(viewModel)
+                    Spacer(modifier = Modifier.height(100.dp))
+                    MyOutLineTextField(viewModel)
+                    Spacer(modifier = Modifier.height(18.dp))
+                    MyButton(viewModel)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ItemList(viewModel)
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
+fun MyTopAppBar(viewodel: ItemViewModel) {
+    val context = LocalContext.current.applicationContext
+    TopAppBar(title = { Text(text = "NourEddine", fontSize = 30.sp) }, navigationIcon = {
+        IconButton(onClick = {
+            Toast.makeText(context, "NourEddine", Toast.LENGTH_SHORT).show()
+        }) {
+            Icon(
+                painter = painterResource(id = R.drawable.plant),
+                contentDescription = "NourEddine icon"
+            )
+        }
+    }, colors = TopAppBarDefaults.topAppBarColors(
+        containerColor = GreenJc,
+        titleContentColor = Color.White,
+        navigationIconContentColor = Color.Black,
+    ), actions = {
+        IconButton(onClick = {
+            Toast.makeText(context, "Profile", Toast.LENGTH_SHORT).show()
+        }) {
+            Icon(
+                imageVector = Icons.Filled.Person,
+                contentDescription = "Profile",
+                tint = Color.Black
+            )
+        }
+        IconButton(onClick = {
+            Toast.makeText(context, "Search", Toast.LENGTH_SHORT).show()
+        }) {
+            Icon(
+                imageVector = Icons.Filled.Search,
+                contentDescription = "Search",
+                tint = Color.Black
+            )
+        }
+        IconButton(onClick = {
+            Toast.makeText(context, "Menu", Toast.LENGTH_SHORT).show()
+        }) {
+            Icon(
+                imageVector = Icons.Filled.MoreVert,
+                contentDescription = "Menu",
+                tint = Color.Black
+            )
+        }
+    })
+}
+
+
+@Composable
+fun MyOutLineTextField(viewModel: ItemViewModel) {
+    val textValue = remember { mutableStateOf("") }
+
+    OutlinedTextField(
+        value = textValue.value,
+        onValueChange = { text ->
+            textValue.value = text
+            viewModel.updateSearchQuery(text)
+        },
+        label = {
+            Text(text = stringResource(id = R.string.search), color = Color.Black)
+        },
     )
 }
 
-@Composable
-fun FirstUI(modifier: Modifier = Modifier) {
-    // TODO 1: Create state variables for text input and items list
-
-    Column(
-        modifier = modifier
-            .padding(25.dp)
-            .fillMaxSize()
-    ) {
-        SearchInputBar(
-            textValue = "", // TODO 2: Connect to state
-            onTextValueChange = { /* TODO 3: Update text state */ },
-            onAddItem = { /* TODO 4: Add item to list */ },
-            onSearch = { /* TODO 5: Implement search functionality */ }
-        )
-
-        // TODO 6: Display list of items using CardsList composable
-        CardsList(emptyList())
-    }
-}
 
 @Composable
-fun SearchInputBar(
-    textValue: String,
-    onTextValueChange: (String) -> Unit,
-    onAddItem: (String) -> Unit,
-    onSearch: (String) -> Unit
-) {
+fun MyButton(viewModel: ItemViewModel) {
+    val textValue = remember { mutableStateOf("") }
+
     Column {
-        TextField(
-            value = textValue,
-            onValueChange = onTextValueChange,
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Enter text...") }
-        )
+        OutlinedTextField(
+            value = textValue.value,
+            onValueChange = { text -> textValue.value = text },
+            label = {
+                Text(
+                    text = stringResource(id = R.string.my_out_lined_text), color = Color.Black
+                )
+            },
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            )
+        Button(
+            onClick = {
+                if (textValue.value.isNotBlank()) {
+                    viewModel.addItem(textValue.value)
+                    textValue.value = ""
+                }
+            }, colors = ButtonDefaults.buttonColors(
+                containerColor = colorResource(id = R.color.teal_200),
+                contentColor = colorResource(id = R.color.black)
+            ),
+
+            border = BorderStroke(
+                width = 6.dp, color = colorResource(id = R.color.purple_700)
+            ), modifier = Modifier.padding(2.dp)
         ) {
-            Button(onClick = { /* TODO 7: Handle add button click */ }) {
-                Text("Add")
-            }
+            Text(text = stringResource(id = R.string.add_button))
 
-            Button(onClick = { /* TODO 8: Handle search button click */ }) {
-                Text("Search")
-            }
+
         }
     }
 }
 
+
 @Composable
-fun CardsList(displayedItems: List<String>) {
-    // TODO 9: Implement LazyColumn to display items
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        // TODO 10: Create cards for each item in the list
-        items(displayedItems) { item ->
+fun ItemList(viewModel: ItemViewModel) {
+    val items by viewModel.items.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
+
+    val filteredItems = if (searchQuery.isEmpty()) {
+        items
+    } else {
+        items.filter { it.contains(searchQuery, ignoreCase = true) }
+    }
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        items(filteredItems) { item ->
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                    .padding(8.dp),
+                elevation = CardDefaults.cardElevation(4.dp)
             ) {
-                Text(text = "Sample Item", modifier = Modifier.padding(16.dp))
+                Text(
+                    text = item,
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
     }
 }
+
