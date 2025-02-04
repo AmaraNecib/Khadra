@@ -48,6 +48,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun FirstUI(modifier: Modifier = Modifier) {
     var textValue by remember { mutableStateOf("") }
+
     val allItems = remember { mutableStateListOf<String>() }
     var searchQuery by remember { mutableStateOf("") }
     val displayedItems = if (searchQuery.isEmpty()) {
