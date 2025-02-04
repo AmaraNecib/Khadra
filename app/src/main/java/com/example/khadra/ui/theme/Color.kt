@@ -1,26 +1,19 @@
 package com.example.khadra.ui.theme
 
 import androidx.compose.ui.graphics.Color
+// ألوان رئيسية
+val GreenPrimary = Color(0xFF388E3C)
+val GreenSecondary = Color(0xFF388E3C)
+val GreenDark = Color(0xFF278027)
 
-/*
- * Custom color definitions for the application theme
- * Light and dark variants for different theme modes
- */
-
-// Light Theme Colors
-val MeadowGreen = Color(0xFF4CAF50)       // Primary color - Vibrant green
-val SageGreen = Color(0xFF9CCC65)         // Secondary color - Soft green
-val EarthBrown = Color(0xFF8D6E63)        // Tertiary color - Warm brown
-
-// Dark Theme Colors
-val ForestGreen = Color(0xFF2E7D32)       // Dark theme primary - Deep green
-val PineGreen = Color(0xFF689F38)         // Dark theme secondary - Muted green
-val OakBrown = Color(0xFF6D4C41)          // Dark theme tertiary - Rich brown
-
-// Neutral Colors
-val WheatYellow = Color(0xFFFFF8E1)       // Background color - Light beige
-val SoilGray = Color(0xFF757575)          // Text/icon color - Earthy gray
-
-// Accent Colors
-val TomatoRed = Color(0xFFD32F2F)         // Error/warning color
-val SunflowerYellow = Color(0xFFFFEB3B)   // Highlight color
+// ألوان خلفية
+val BackgroundLight = Color(0xFFE8F5E9)
+val BackgroundDark = Color(0xFF568A73)
+val SurfaceLight = Color(0xFFC8E6C9)
+val SurfaceDark = Color(0xFF53AB73)
+// ألوان النصوص
+val TextColorLight = Color(0xFF2E7D32)
+val TextColorDark = Color(0xFFDCE775)
+//لوان التنبيهات
+val WarningRed = Color(0xFFD32F2F)
+val AccentYellow = Color(0xFFFFEB3B)

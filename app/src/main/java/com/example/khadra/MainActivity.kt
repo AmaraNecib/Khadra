@@ -4,30 +4,28 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.khadra.ui.theme.KhadraTheme
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.border
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Warning
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,10 +33,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             KhadraTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // TODO 0: Call the UI composable function
-                    //FirstUI(modifier = Modifier.padding(innerPadding))
-                    Greeting(name = "Amara", modifier = Modifier.padding(innerPadding))
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    containerColor = MaterialTheme.colorScheme.background,
+                    contentColor = MaterialTheme.colorScheme.onBackground
+                ) { innerPadding ->
+                    FirstUI(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -46,31 +46,36 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Composable
 fun FirstUI(modifier: Modifier = Modifier) {
-    // TODO 1: Create state variables for text input and items list
+    var textValue by remember { mutableStateOf("") }
+    val allItems = remember { mutableStateListOf<String>() }
+    var searchQuery by remember { mutableStateOf("") }
+    val displayedItems = if (searchQuery.isEmpty()) {
+        allItems
+    } else {
+        allItems.filter { it.contains(searchQuery, ignoreCase = true) }
+    }
 
     Column(
         modifier = modifier
-            .padding(25.dp)
+            .padding(22.dp)
             .fillMaxSize()
     ) {
         SearchInputBar(
-            textValue = "", // TODO 2: Connect to state
-            onTextValueChange = { /* TODO 3: Update text state */ },
-            onAddItem = { /* TODO 4: Add item to list */ },
-            onSearch = { /* TODO 5: Implement search functionality */ }
+            textValue = textValue,
+            onTextValueChange = { newText -> textValue = newText },
+            onAddItem = { newItem ->
+                if (newItem.isNotBlank()) {
+                    allItems.removeAll { it.isBlank() }
+                    allItems.add(newItem)
+                    textValue = ""
+                }
+            },
+            onSearch = { newQuery -> searchQuery = newQuery }
         )
-
-        // TODO 6: Display list of items using CardsList composable
-        CardsList(emptyList())
+        CardsList(displayedItems) { item ->
+            allItems.remove(item)
+        }
     }
 }
 
@@ -82,44 +87,143 @@ fun SearchInputBar(
     onSearch: (String) -> Unit
 ) {
     Column {
-        TextField(
+        BasicTextField(
             value = textValue,
             onValueChange = onTextValueChange,
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Enter text...") }
-        )
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+                .border(2.dp, MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(35.dp))
+                .padding(16.dp),
+            decorationBox = { innerTextField ->
+                Box(
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    if (textValue.isEmpty()) {
+                        Text("      ENTER YOUR TREE...", color = Color.Gray)
 
+                    }
+                    innerTextField()
+                }
+            }
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Button(onClick = { /* TODO 7: Handle add button click */ }) {
-                Text("Add")
+            IconButton(
+                onClick = { onAddItem(textValue) },
+                modifier = Modifier
+                    .size(56.dp)
+                    .shadow(4.dp, RoundedCornerShape(50)),
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "ADD TREE",
+                    modifier = Modifier.size(24.dp)
+                )
             }
-
-            Button(onClick = { /* TODO 8: Handle search button click */ }) {
-                Text("Search")
+            IconButton(
+                onClick = { onSearch(textValue) },
+                modifier = Modifier
+                    .size(56.dp)
+                    .shadow(4.dp, RoundedCornerShape(50)),
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "SEARCH YOUR TREE",
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
     }
 }
 
 @Composable
-fun CardsList(displayedItems: List<String>) {
-    // TODO 9: Implement LazyColumn to display items
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        // TODO 10: Create cards for each item in the list
-        items(displayedItems) { item ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-            ) {
-                Text(text = "Sample Item", modifier = Modifier.padding(16.dp))
+fun CardsList(displayedItems: List<String>, onDelete: (String) -> Unit) {
+    if (displayedItems.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .border(2.dp, Color.Red, shape = RoundedCornerShape(12.dp))
+                .padding(12.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Filled.Warning,
+                    contentDescription = "Warning",
+                    tint = Color.Red,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "⚠️ NOT FOND!",
+                    color = Color.Red,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    } else {
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(displayedItems) { item ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                        .shadow(4.dp, RoundedCornerShape(12.dp)),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = item,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        IconButton(onClick = { onDelete(item) }) {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = "DELETE",
+                                tint = Color.Red
+                            )
+                        }
+                    }
+                }
             }
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    KhadraTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = Color(0xFFFAFEF5)
+        ) {
+            FirstUI()
+        }
+    }
+}
+
