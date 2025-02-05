@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Khadra</string>
+    <string name="my_out_lined_text">Enter new item</string>
+    <string name="add_button">Add</string>
+    <string name="search">Search</string>
+
 </resources>
