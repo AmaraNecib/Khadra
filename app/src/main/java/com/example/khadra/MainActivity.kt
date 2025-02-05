@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
@@ -38,8 +39,7 @@ class MainActivity : ComponentActivity() {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-
-                    ) {
+                ) {
                     MyTopAppBar(viewModel)
                     Spacer(modifier = Modifier.height(100.dp))
                     MyOutLineTextField(viewModel)
@@ -57,56 +57,62 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MyTopAppBar(viewModel: ItemViewModel) {
     val context = LocalContext.current.applicationContext
-    TopAppBar(title = { Text(text = "NourEddine", fontSize = 30.sp) }, navigationIcon = {
-        IconButton(onClick = {
-            Toast.makeText(context, "NourEddine", Toast.LENGTH_SHORT).show()
-        }) {
-            Icon(
-                painter = painterResource(id = R.drawable.plant),
-                contentDescription = "NourEddine icon"
-            )
+    TopAppBar(
+        title = { Text(text = "NourEddine", fontSize = 30.sp) },
+        navigationIcon = {
+            IconButton(onClick = {
+                Toast.makeText(context, "NourEddine", Toast.LENGTH_SHORT).show()
+            }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.plant),
+                    contentDescription = "NourEddine icon"
+                )
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = GreenJc,
+            titleContentColor = Color.White,
+            navigationIconContentColor = Color.Black,
+        ),
+        actions = {
+            IconButton(onClick = {
+                Toast.makeText(context, "Profile", Toast.LENGTH_SHORT).show()
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.Person,
+                    contentDescription = "Profile",
+                    tint = Color.Black
+                )
+            }
+            IconButton(onClick = {
+                Toast.makeText(context, "Search", Toast.LENGTH_SHORT).show()
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = "Search",
+                    tint = Color.Black
+                )
+            }
+            IconButton(onClick = {
+                Toast.makeText(context, "Menu", Toast.LENGTH_SHORT).show()
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.MoreVert,
+                    contentDescription = "Menu",
+                    tint = Color.Black
+                )
+            }
         }
-    }, colors = TopAppBarDefaults.topAppBarColors(
-        containerColor = GreenJc,
-        titleContentColor = Color.White,
-        navigationIconContentColor = Color.Black,
-    ), actions = {
-        IconButton(onClick = {
-            Toast.makeText(context, "Profile", Toast.LENGTH_SHORT).show()
-        }) {
-            Icon(
-                imageVector = Icons.Filled.Person,
-                contentDescription = "Profile",
-                tint = Color.Black
-            )
-        }
-        IconButton(onClick = {
-            Toast.makeText(context, "Search", Toast.LENGTH_SHORT).show()
-        }) {
-            Icon(
-                imageVector = Icons.Filled.Search,
-                contentDescription = "Search",
-                tint = Color.Black
-            )
-        }
-        IconButton(onClick = {
-            Toast.makeText(context, "Menu", Toast.LENGTH_SHORT).show()
-        }) {
-            Icon(
-                imageVector = Icons.Filled.MoreVert,
-                contentDescription = "Menu",
-                tint = Color.Black
-            )
-        }
-    })
+    )
 }
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyOutLineTextField(viewModel: ItemViewModel) {
     val textValue = remember { mutableStateOf("") }
 
     OutlinedTextField(
+
         value = textValue.value,
         onValueChange = { text ->
             textValue.value = text
@@ -114,11 +120,15 @@ fun MyOutLineTextField(viewModel: ItemViewModel) {
         },
         label = {
             Text(text = stringResource(id = R.string.search), color = Color.Black)
-        },
+        }, colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedTextColor = Color.Black,
+            focusedBorderColor = Color.DarkGray,
+            cursorColor = Color.Gray
+        )
     )
 }
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyButton(viewModel: ItemViewModel) {
     val textValue = remember { mutableStateOf("") }
@@ -129,33 +139,34 @@ fun MyButton(viewModel: ItemViewModel) {
             onValueChange = { text -> textValue.value = text },
             label = {
                 Text(
-                    text = stringResource(id = R.string.my_out_lined_text), color = Color.Black
-                )
+                    text = stringResource(id = R.string.my_out_lined_text), color = Color.Black)
             },
-
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedTextColor = Color.Black,
+                focusedBorderColor = Color.DarkGray,
+                cursorColor = Color.Gray
             )
+        )
         Button(
             onClick = {
                 if (textValue.value.isNotBlank()) {
                     viewModel.addItem(textValue.value)
                     textValue.value = ""
                 }
-            }, colors = ButtonDefaults.buttonColors(
+            },
+            colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(id = R.color.teal_200),
                 contentColor = colorResource(id = R.color.black)
             ),
-
             border = BorderStroke(
-                width = 6.dp, color = colorResource(id = R.color.purple_700)
-            ), modifier = Modifier.padding(2.dp)
+                width = 5.dp, color = colorResource(id = R.color.purple_700)
+            ),
+            modifier = Modifier.padding(2.dp)
         ) {
             Text(text = stringResource(id = R.string.add_button))
-
-
         }
     }
 }
-
 
 @Composable
 fun ItemList(viewModel: ItemViewModel) {
@@ -165,7 +176,7 @@ fun ItemList(viewModel: ItemViewModel) {
     val filteredItems = if (searchQuery.isEmpty()) {
         items
     } else {
-        items.filter { it.contains(searchQuery, ignoreCase = true) }
+        items.filter { it.text.contains(searchQuery, ignoreCase = true) }
     }
 
     LazyColumn(
@@ -180,11 +191,27 @@ fun ItemList(viewModel: ItemViewModel) {
                     .padding(8.dp),
                 elevation = CardDefaults.cardElevation(4.dp)
             ) {
-                Text(
-                    text = item,
-                    modifier = Modifier.padding(16.dp),
-                    style = MaterialTheme.typography.bodyLarge
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = item.text,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    IconButton(
+                        onClick = { viewModel.deleteItem(item.id) }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete",
+                            tint = Color.Red
+                        )
+                    }
+                }
             }
         }
     }
