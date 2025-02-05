@@ -47,6 +47,21 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
+<<<<<<< HEAD
+=======
+fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Hello $name!",
+        modifier = modifier
+    )
+}
+
+/**
+ * Main composable function for the UI layout
+ * @param modifier Modifier for layout adjustments
+ */
+@Composable
+>>>>>>> f93f18d6f9bf64e0bd0ee14c0f3c3fdcf9ab308a
 fun FirstUI(modifier: Modifier = Modifier) {
     // TODO 1: Create a state for text input using `remember` and `mutableStateOf`
     var textValue by remember { mutableStateOf("") }
@@ -88,6 +103,14 @@ fun FirstUI(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * Composable for search and input controls
+ * @param textValue Current value of the input field
+ * @param onTextValueChange Callback for text changes
+ * @param onAddItem Callback for adding new items
+ * @param onSearch Callback for performing search
+ */
+
 @Composable
 fun SearchInputBar(
     textValue: String,
@@ -125,6 +148,10 @@ fun SearchInputBar(
     }
 }
 
+/**
+ * Composable for displaying a list of items in cards
+ * @param displayedItems List of items to display
+ */
 @Composable
 fun CardsList(displayedItems: List<String>) {
     // Displays all the items passed to it in a LazyColumn for efficient scrolling
