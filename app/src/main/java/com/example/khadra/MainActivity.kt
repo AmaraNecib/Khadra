@@ -28,6 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.khadra.ui.theme.KhadraTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,8 +39,7 @@ class MainActivity : ComponentActivity() {
             KhadraTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     // TODO 0: Call the UI composable function
-                    //FirstUI(modifier = Modifier.padding(innerPadding))
-                    Greeting(name = "Amara", modifier = Modifier.padding(innerPadding))
+                    FirstUI(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -56,6 +57,12 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun FirstUI(modifier: Modifier = Modifier) {
     // TODO 1: Create state variables for text input and items list
+    var textValue by remember { mutableStateOf("") }
+    var allItems = remember { mutableStateListOf<String>() }
+    var searchQuery by remember { mutableStateOf("default") }
+    var displayedItems by remember { mutableStateOf(allItems.toList()) }
+
+
 
     Column(
         modifier = modifier
@@ -63,14 +70,37 @@ fun FirstUI(modifier: Modifier = Modifier) {
             .fillMaxSize()
     ) {
         SearchInputBar(
-            textValue = "", // TODO 2: Connect to state
-            onTextValueChange = { /* TODO 3: Update text state */ },
-            onAddItem = { /* TODO 4: Add item to list */ },
-            onSearch = { /* TODO 5: Implement search functionality */ }
+            textValue = "$textValue", // TODO 2: Connect to state
+            onTextValueChange = { /* TODO 3: Update text state */
+                    value ->
+                textValue = value
+                //real time search
+                if(textValue.isNotEmpty()) {
+                    displayedItems = allItems.filter { it.contains(value, ignoreCase = true)}
+                }else{
+                    displayedItems = allItems.toList()
+                }},
+            onAddItem = { /* TODO 4: Add item to list */
+                    itemToAdd ->
+                if(textValue.isNotEmpty()){
+                    allItems.add(itemToAdd);
+                    displayedItems = allItems.toList()
+                    textValue = "";
+                }
+            },
+            onSearch = { /* TODO 5: Implement search functionality */
+                    itemToSearch ->
+                if(textValue.isNotEmpty()) {
+                    displayedItems =  allItems.filter { it.contains(itemToSearch, ignoreCase = true)}
+                    textValue = ""
+                }else{
+                    displayedItems = allItems.toList()
+                }
+            }
         )
 
         // TODO 6: Display list of items using CardsList composable
-        CardsList(emptyList())
+        CardsList(displayedItems)
     }
 }
 
@@ -95,11 +125,11 @@ fun SearchInputBar(
                 .padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Button(onClick = { /* TODO 7: Handle add button click */ }) {
+            Button(onClick = { onAddItem(textValue)  /* TODO 7: Handle add button click */ }) {
                 Text("Add")
             }
 
-            Button(onClick = { /* TODO 8: Handle search button click */ }) {
+            Button(onClick = {onSearch(textValue) /* TODO 8: Handle search button click */ }) {
                 Text("Search")
             }
         }
