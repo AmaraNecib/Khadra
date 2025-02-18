@@ -24,3 +24,5 @@ val SoilGray = Color(0xFF757575)          // Text/icon color - Earthy gray
 // Accent Colors
 val TomatoRed = Color(0xFFD32F2F)         // Error/warning color
 val SunflowerYellow = Color(0xFFFFEB3B)   // Highlight color
+
+val KhadraGreen = Color(0xFF43C94B)

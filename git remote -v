@@ -1,0 +1,69 @@
+[33mcommit 1fe563c5c636694d7f4f61c50776b4de31d1ff9c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: nnul <salahxd99@gmail.com>
+Date:   Fri Jan 31 14:52:54 2025 +0100
+
+    Revert "screenshots"
+    
+    This reverts commit c0eed6dce2c34d361404054a98d21b834c09dc3e.
+
+[33mcommit c0eed6dce2c34d361404054a98d21b834c09dc3e[m
+Author: nnul <salahxd99@gmail.com>
+Date:   Fri Jan 31 14:51:53 2025 +0100
+
+    screenshots
+
+[33mcommit d9a22dd2a04801bfd09e927383cf407b353ab400[m
+Author: nnul <salahxd99@gmail.com>
+Date:   Fri Jan 31 11:56:25 2025 +0100
+
+    Revert "captured some screenshots"
+    
+    This reverts commit 2147802654abab57448f59d1bd116b4b4b55df7f.
+
+[33mcommit e903fe548a03b7bb7256c28da46531424ac70b07[m
+Merge: 76c0e0e 2147802
+Author: nnul <107971634+notkisk@users.noreply.github.com>
+Date:   Fri Jan 31 11:33:32 2025 +0100
+
+    Merge pull request #2 from notkisk/myBranch
+    
+    captured some screenshots
+
+[33mcommit 2147802654abab57448f59d1bd116b4b4b55df7f[m
+Author: nnul <salahxd99@gmail.com>
+Date:   Fri Jan 31 11:34:36 2025 +0100
+
+    captured some screenshots
+
+[33mcommit 76c0e0e5570f413593235b4fdb7ad5f6036b8392[m
+Merge: ba02c0f 7d9d28e
+Author: nnul <107971634+notkisk@users.noreply.github.com>
+Date:   Fri Jan 31 11:28:29 2025 +0100
+
+    Merge pull request #1 from notkisk/myBranch
+    
+    completed tp1
+
+[33mcommit 7d9d28e2450ffaaaa1857e47577c416bd0d42bc2[m
+Author: NECIB AMARA <59263630+amaranecib@users.noreply.github.com>
+Date:   Sun Jan 26 14:01:20 2025 +0100
+
+    Update ReadMe.md
+
+[33mcommit ba02c0f10056eb6693c263a38aad4248440edef1[m[33m ([m[1;31mupstream/main[m[33m, [m[1;31mupstream/HEAD[m[33m)[m
+Author: NECIB AMARA <59263630+AmaraNecib@users.noreply.github.com>
+Date:   Sun Jan 26 14:01:20 2025 +0100
+
+    Update ReadMe.md
+
+[33mcommit a319c6ae02f602eebf172cbac1c6c2cb11ebe97e[m
+Author: Ahmed <ahmed.g@turing.com>
+Date:   Sun Jan 26 13:55:29 2025 +0100
+
+    Update Readme
+
+[33mcommit 015cd12de373c6c35dc96bc29983bc0165591ae4[m
+Author: Ahmed <ahmed.g@turing.com>
+Date:   Sun Jan 26 13:44:24 2025 +0100
+
+    TP1
