@@ -28,7 +28,6 @@ class TreeViewModel : ViewModel() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             try {
-                // Simulate network delay
                 delay(2000)
                 val trees = TreeRepository.getTrees()
                 _uiState.value = _uiState.value.copy(
