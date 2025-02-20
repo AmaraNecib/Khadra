@@ -8,11 +8,11 @@ object TreeRepository {
         return listOf(
             Tree(
                 id = "1",
-                name = "Apple Tree",
+                name = "شجرة الزيتون الاخصر",
                 type = "Fruit",
                 status = "Healthy",
                 coordinates = Pair(37.7749, -122.4194),
-                urlImage = "https://images.pexels.com/photos/1459495/pexels-photo-1459495.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                urlImage = "https://www.oaktreecapital.com/images/oaktreecaplibraries/global/hp_poster.png",
                 lastIrrigationAction = Date(),
                 createdAt = Date(),
                 updatedAt = Date()
