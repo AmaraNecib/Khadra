@@ -24,7 +24,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -51,9 +50,7 @@ import com.example.khadra.ui.theme.KhadraGreen
 import com.example.khadra.ui.theme.KhadraTheme
 import com.example.khadra.viewmodel.TreeViewModel
 
-
 @Composable
-
 fun MainScreen(
     treeViewModel: TreeViewModel,
     modifier: Modifier = Modifier
@@ -66,14 +63,12 @@ fun MainScreen(
         NavItem("Home", painterResource(R.drawable.ic_outline_home_24))
     )
 
-
-
     var selectedIndex by remember { mutableIntStateOf(4) } // Default screen is Home
     val mod = modifier.fillMaxWidth()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.White,
-         topBar = { TopBar(selectedIndex) },
+        topBar = { TopBar(selectedIndex) },
         bottomBar = {
             Box(
                 modifier = Modifier
@@ -90,22 +85,21 @@ fun MainScreen(
                 NavigationBar(containerColor = Color.White, tonalElevation = 0.dp) {
                     navItemsList.forEachIndexed { index, item ->
                         if (index == 2) {
-                            // Custom Add Button (Bigger + Colored)
                             NavigationBarItem(
                                 selected = selectedIndex == index,
                                 onClick = { selectedIndex = index },
                                 icon = {
                                     Box(
                                         modifier = Modifier
-                                            .size(70.dp) // ✅ Bigger button
-                                            .background(KhadraGreen, shape = CircleShape) // ✅ Custom color
-                                            .padding(10.dp) // ✅ Adjust padding for better appearance
+                                            .size(70.dp)
+                                            .background(KhadraGreen, shape = CircleShape)
+                                            .padding(10.dp)
                                     ) {
                                         Icon(
                                             item.icon,
                                             contentDescription = item.label,
-                                            modifier = Modifier.size(50.dp), // ✅ Bigger icon
-                                            tint = Color.White // ✅ White icon for contrast
+                                            modifier = Modifier.size(50.dp),
+                                            tint = Color.White
                                         )
                                     }
                                 },
@@ -116,7 +110,6 @@ fun MainScreen(
                                 )
                             )
                         } else {
-                            // Regular Navigation Item
                             NavigationBarItem(
                                 selected = selectedIndex == index,
                                 onClick = { selectedIndex = index },
@@ -148,12 +141,10 @@ fun ContentScreen(modifier: Modifier = Modifier, selectedIndex: Int, treeViewMod
     when (selectedIndex) {
         0 -> ProfileScreen()
         1 -> MapScreen()
-        2 -> AddScreen()
-        3 -> IrrigationScreen()
-        4 -> HomeScreen(modifier,treeViewModel) // ✅ Fixed: No infinite recursion
+        2 -> HomeScreen(modifier,treeViewModel)
     }
 }
-//hell
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(modifier: Modifier, treeViewModel: TreeViewModel) {
@@ -167,28 +158,25 @@ fun HomeScreen(modifier: Modifier, treeViewModel: TreeViewModel) {
                 tree.status.contains(searchQuery, ignoreCase = true)
     }
 
-    // State to track the selected tree
     var selectedTree by remember { mutableStateOf<Tree?>(null) }
 
-    // Show Tree Details Dialog or Screen if a tree is selected
     selectedTree?.let { tree ->
         TreeDetailsDialog(tree = tree) {
-            selectedTree = null // Close the details dialog or screen
+            selectedTree = null
         }
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 140.dp),
+            .padding(top = 135.dp),
     ) {
         Column {
-            // Search Bar (TextField)
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { sq -> searchQuery = sq },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp),
-                shape = RoundedCornerShape(32.dp), // Matches Box clipping
+                shape = RoundedCornerShape(32.dp),
                 singleLine = true,
                 placeholder = { Text("Search...", fontSize = 16.sp, color = Color.Black) },
                 trailingIcon = {
@@ -200,7 +188,7 @@ fun HomeScreen(modifier: Modifier, treeViewModel: TreeViewModel) {
                     )
                 },
                 colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent, // Transparent for image visibility
+                    containerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Gray,
                     unfocusedIndicatorColor = Color.Gray
                 ),
@@ -218,7 +206,6 @@ fun HomeScreen(modifier: Modifier, treeViewModel: TreeViewModel) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Loading State
             if (uiState.isLoading) {
                 Box(
                     modifier = Modifier
@@ -236,7 +223,7 @@ fun HomeScreen(modifier: Modifier, treeViewModel: TreeViewModel) {
                 if (searchQuery.isNotEmpty() && filteredTrees.isNotEmpty()) {
                     LazyColumn(modifier = Modifier.fillMaxSize().padding(bottom = 110.dp)) {
                         items(filteredTrees) { tree ->
-                            TreeCard(tree = tree, onCardClick = { selectedTree = it }) // Pass tree and click handler
+                            TreeCard(tree = tree, onCardClick = { selectedTree = it })
                             Spacer(Modifier.height(12.dp))
                         }
                     }
@@ -249,7 +236,7 @@ fun HomeScreen(modifier: Modifier, treeViewModel: TreeViewModel) {
                 } else {
                     LazyColumn(modifier = Modifier.fillMaxSize().padding(bottom = 110.dp)) {
                         items(treesList) { tree ->
-                            TreeCard(tree = tree, onCardClick = { selectedTree = it }) // Pass tree and click handler
+                            TreeCard(tree = tree, onCardClick = { selectedTree = it })
                             Spacer(Modifier.height(12.dp))
                         }
                     }
@@ -258,6 +245,7 @@ fun HomeScreen(modifier: Modifier, treeViewModel: TreeViewModel) {
         }
     }
 }
+
 @Composable
 fun TreeDetailsDialog(tree: Tree, onDismiss: () -> Unit) {
     AlertDialog(
@@ -270,7 +258,6 @@ fun TreeDetailsDialog(tree: Tree, onDismiss: () -> Unit) {
                 Text("Type: ${tree.type}")
                 Text("Location: ${tree.coordinates.first}, ${tree.coordinates.second}")
                 Text("Last Irrigation: ${tree.lastIrrigationAction}")
-                // Add more fields as needed
             }
         },
         confirmButton = {
@@ -281,26 +268,21 @@ fun TreeDetailsDialog(tree: Tree, onDismiss: () -> Unit) {
     )
 }
 
-
-
 @Composable
 fun TopBar(selectedIndex:Int) {
-
     var displayTopBar by remember { mutableStateOf(false) }
-when (selectedIndex){
-    0-> displayTopBar=false
-    1-> displayTopBar=true
-    2-> displayTopBar=false
-    3-> displayTopBar=false
-    4-> displayTopBar=true
-
-}
+    when (selectedIndex){
+        0-> displayTopBar=false
+        1-> displayTopBar=true
+        2-> displayTopBar=false
+        3-> displayTopBar=false
+        4-> displayTopBar=true
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp),
-        //color = Color.Black,
-        elevation = CardDefaults.cardElevation(8.dp) // Elevation creates a shadow effect
+        elevation = CardDefaults.cardElevation(8.dp)
     ) {
         Box(
             contentAlignment = Alignment.BottomCenter,
@@ -333,43 +315,36 @@ when (selectedIndex){
                 fontFamily = Inter,
                 style = TextStyle(
                     shadow = Shadow(
-                        color = Color.Black.copy(alpha = 0.4f), // Shadow color
-                        offset = Offset(0f, 10f), // Shadow position (x, y)
-                        blurRadius = 8f // Blur effect
+                        color = Color.Black.copy(alpha = 0.4f),
+                        offset = Offset(0f, 10f),
+                        blurRadius = 8f
                     )
                 )
-
             )
-
         }
     }
-
-
 }
 
 @Preview(showBackground = true, widthDp = 400, heightDp = 800)
 @Composable
 fun PreviewMainScreen() {
-    val mockViewModel = TreeViewModel() // If your ViewModel requires parameters, use a mock/fake implementation
-
+    val mockViewModel = TreeViewModel()
     KhadraTheme  {
         MainScreen(treeViewModel = mockViewModel)
     }
 }
 
-
 @Composable
 fun TreeCard(tree: Tree, onCardClick: (Tree) -> Unit) {
-
     Surface(
         modifier = Modifier
             .clickable { onCardClick(tree) }
             .wrapContentSize()
             .padding(horizontal = 16.dp)
             .shadow(
-                elevation = 6.dp, // Shadow elevation
+                elevation = 6.dp,
                 shape = RoundedCornerShape(10.dp),
-                clip = true, // Clip the shadow to the shape
+                clip = true,
             ),
         shape = RoundedCornerShape(10.dp)
     ) {
@@ -379,7 +354,6 @@ fun TreeCard(tree: Tree, onCardClick: (Tree) -> Unit) {
             colors = CardDefaults.cardColors(containerColor = Color(0x00FFFFFF))
         ) {
             Row(modifier = Modifier.fillMaxWidth()) {
-                // Space 1 (25%)
                 Box(
                     modifier = Modifier
                         .weight(0.25f)
@@ -393,17 +367,16 @@ fun TreeCard(tree: Tree, onCardClick: (Tree) -> Unit) {
                     ) {
                         Text(
                             text = ":الحالة ",
-                            fontSize = 18.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black,
                             modifier = Modifier.zIndex(100f).fillMaxWidth().align(Alignment.End),
-                            textAlign = TextAlign.Center // Ensures text alignment within its own bounds
+                            textAlign = TextAlign.Center
                         )
-                        StatusBar(tree.status) // Assuming this is a custom composable for showing the status
+                        StatusBar(tree.status)
                     }
                 }
 
-                // Space 2 (50%)
                 Box(
                     modifier = Modifier.height(100.dp).fillMaxSize().weight(0.5f)
                 ) {
@@ -428,52 +401,51 @@ fun TreeCard(tree: Tree, onCardClick: (Tree) -> Unit) {
                                 fontWeight = FontWeight.Light
                             )
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_outline_location_on), // Replace with your icon resource
+                                painter = painterResource(id = R.drawable.ic_outline_location_on),
                                 contentDescription = "Example Icon",
                                 modifier = Modifier.size(20.dp),
-                                tint = Color.Gray // Optional: Set icon color
+                                tint = Color.Gray
                             )
                         }
 
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                             Text(
-                                text = "هيثم بكاري: 10 شجرة",
+                                text = "هاله محمد اسلام: 10 شجرة",
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Light,
                                 color = Color.Gray
                             )
                             Box(
                                 modifier = Modifier
-                                    .size(20.dp) // Set the size of the circular image with border
-                                    .clip(CircleShape).shadow(elevation = 4.dp) // Apply shadow // Clip the Box to a circular shape
+                                    .size(20.dp)
+                                    .clip(CircleShape).shadow(elevation = 4.dp)
                             ) {
                                 Image(
-                                    painter = painterResource(id = R.drawable.guy1), // Replace with your image resource
+                                    painter = painterResource(id = R.drawable.guy1),
                                     contentDescription = "Circular Image with Border",
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .clip(CircleShape), // Clip the image to a circular shape
-                                    contentScale = ContentScale.Crop // Ensures the image fills the circle
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop
                                 )
                             }
                         }
                     }
                 }
 
-                // Space 3 (25%)
                 Box(
                     modifier = Modifier
                         .weight(0.25f)
-                        .aspectRatio(1f) // Enforce 1:1 aspect ratio for the Box
-                        .wrapContentSize() // Make the Box wrap around the content
+                        .aspectRatio(1f)
+                        .wrapContentSize()
                         .padding(8.dp)
                         .border(2.dp, color = Color.Black.copy(alpha = 0.25f), shape = RoundedCornerShape(20.dp))
                 ) {
                     AsyncImage(
-                        model = tree.urlImage, // Use tree's image URL
+                        model = tree.urlImage,
                         contentDescription = "Tree Image",
-                        modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(20.dp)), // Apply rounded corners
-                        contentScale = ContentScale.Crop // Ensures the image fits inside the Box
+                        modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(20.dp)),
+                        contentScale = ContentScale.Crop
                     )
                 }
             }
@@ -481,16 +453,14 @@ fun TreeCard(tree: Tree, onCardClick: (Tree) -> Unit) {
     }
 }
 
-
-
 @Composable
 fun StatusBar(status: String) {
     val color = when (status.lowercase()) {
-        "critical"->Color(0xFFFF0000)// Convert to lowercase for case-insensitive comparison
+        "critical"->Color(0xFFFF0000)
         "low" -> Color(0xFFFF6F00)
         "moderate" -> Color(0xFFFFDD00)
         "healthy" -> KhadraGreen
-        else -> Color.Gray // Default color for unknown status
+        else -> Color.Gray
     }
 
     val progress = when (status.lowercase()) {
@@ -498,28 +468,24 @@ fun StatusBar(status: String) {
         "low" -> 30
         "moderate" -> 45
         "healthy" -> 60
-        else -> 60 // Default color for unknown status
+        else -> 60
     }
 
     Box (contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
-
         Box(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(4.dp))
                 .width(60.dp)
-                .height(10.dp) // Height of the status bar
+                .height(10.dp)
                 .background(Color.White).border(BorderStroke(1.dp, color = Color.Gray))
         ){
             Box(
                 modifier = Modifier
                     .clip(shape = RoundedCornerShape(4.dp))
                     .width(progress.dp)
-                    .height(10.dp) // Height of the status bar
+                    .height(10.dp)
                     .background(color).border(BorderStroke(1.dp, color = Color.Gray))
             )
         }
     }
-
-
-
 }
