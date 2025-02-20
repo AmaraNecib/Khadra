@@ -20,6 +20,17 @@ object TreeTypeRepository {
                 name = "Evergreen",
                 description = "Trees that retain their leaves year-round."
             )
+            ,
+            TreeType(
+                id = "4",
+                name = "Palm",
+                description = "A large, single-stemmed palm with stout, straight or slightly curved trunk, rising from a swollen base surrounded by a mass of roots"
+            ) ,
+            TreeType(
+                id = "4",
+                name = "Vegetable",
+                description = "Trees that bear edible Vegetables."
+            )
         )
     }
 }
