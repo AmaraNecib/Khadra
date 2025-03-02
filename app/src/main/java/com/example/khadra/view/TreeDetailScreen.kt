@@ -26,7 +26,6 @@ fun TreeDetailScreen(
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        // صورة الشجرة
         AsyncImage(
             model = tree.urlImage,
             contentDescription = tree.name,
@@ -39,7 +38,6 @@ fun TreeDetailScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // اسم الشجرة
         Text(
             text = tree.name,
             style = MaterialTheme.typography.headlineMedium
@@ -47,7 +45,6 @@ fun TreeDetailScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // معلومات إضافية
         InfoRow(label = "النوع", value = tree.type)
         InfoRow(label = "الحالة", value = tree.status)
         InfoRow(label = "آخر ري", value = tree.lastIrrigationAction.formatDate())
@@ -75,7 +72,6 @@ private fun InfoRow(label: String, value: String) {
     }
 }
 
-// دالة مساعدة لتنسيق التاريخ
 fun Date.formatDate(): String {
     val formatter = SimpleDateFormat("MMM dd, yyyy - HH:mm", Locale.getDefault())
     return formatter.format(this)
