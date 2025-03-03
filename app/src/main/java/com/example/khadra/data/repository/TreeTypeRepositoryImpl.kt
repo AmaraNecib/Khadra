@@ -35,15 +35,11 @@ class TreeTypeRepositoryImpl @Inject constructor() :TreeTypeRepository{
         )
     )
 
-    // MutableSharedFlow with replay = 1 ensures new collectors get the latest list.
     private val _treeTypeFlow = MutableSharedFlow<List<TreeType>>(replay = 1)
 
     init {
-        // Emit the initial list.
         _treeTypeFlow.tryEmit(_treeTypes.toList())
     }
-
-    // Expose the flow as a read-only Flow<List<TreeType>>.
     override fun getTreeTypes(): Flow<List<TreeType>> = _treeTypeFlow
 
     // Function to add a new TreeType and update the flow.

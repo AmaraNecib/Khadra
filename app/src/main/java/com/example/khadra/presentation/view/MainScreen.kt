@@ -138,7 +138,7 @@ fun ContentScreen(modifier: Modifier = Modifier, selectedIndex: Int) {
     when (selectedIndex) {
         0 -> ProfileScreen()
         1 -> MapScreen()
-        2 -> AddScreen()
+        2 -> AddScreen(modifier)
         3 -> IrrigationScreen()
         4 -> HomeScreen(modifier)
     }

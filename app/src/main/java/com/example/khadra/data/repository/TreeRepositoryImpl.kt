@@ -15,7 +15,7 @@ class TreeRepositoryImpl @Inject constructor() : TreeRepository {
     private val _trees = mutableListOf(
         Tree(
             id = "1",
-            name = "شجرة الزيتون الاخضر",
+            name = "شجرة الزيتون ",
             type = "Fruit",
             status = "Healthy",
             coordinates = Pair(37.7749, -122.4194),
