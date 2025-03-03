@@ -65,7 +65,6 @@ class AddTreeViewModel @Inject constructor(
             _state.value = _state.value.copy(error = "All fields are required")
             return
         }
-
         // Create a new Tree object
         val tree = Tree(
             id = System.currentTimeMillis().toString(), // Generate a unique ID

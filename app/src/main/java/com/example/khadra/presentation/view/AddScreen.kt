@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +32,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.khadra.R
 import com.example.khadra.presentation.viewmodel.AddTreeViewModel
@@ -46,14 +49,15 @@ fun ImageUploadBox(
             .fillMaxWidth()
             .height(150.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.LightGray)
+            .background(colorResource(R.color.mygray))
+            .border(2.dp, Color.Black, RoundedCornerShape(16.dp))
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         if (imageUri.isNullOrEmpty()) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Icon(
-                    painter =  painterResource(R.drawable.ic_outline_add_circle_outline_24),
+                    painter =  painterResource(R.drawable.plus_square_icon),
                     contentDescription = "Add Image",
                     tint = Color.Black,
                     modifier = Modifier.size(40.dp)
@@ -80,7 +84,7 @@ fun ImageUploadBox(
 @Composable
 fun AddScreen(modifier: Modifier = Modifier) {
     val viewModel = hiltViewModel<AddTreeViewModel>()
-    val state = viewModel.state.collectAsState()
+    val state = viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val imageUri = remember { mutableStateOf<String?>(state.value.imageUrl) }
     val imagePickerLauncher = rememberLauncherForActivityResult(
@@ -119,7 +123,7 @@ fun AddScreen(modifier: Modifier = Modifier) {
             OutlinedTextField(
                 value = state.value.type,
                 onValueChange = { viewModel.onEvent(AddTreeEvent.TypeSelected(it)) },
-                label = { Text("Tree Type") },
+                label = { Text("نوع الشجرة") },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
@@ -134,7 +138,7 @@ fun AddScreen(modifier: Modifier = Modifier) {
             OutlinedTextField(
                 value = state.value.status,
                 onValueChange = { viewModel.onEvent(AddTreeEvent.StatusSelected(it)) },
-                label = { Text("Status") },
+                label = { Text("الحالة") },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
@@ -156,7 +160,7 @@ fun AddScreen(modifier: Modifier = Modifier) {
                         viewModel.onEvent(AddTreeEvent.CoordinatesChanged(latitude, longitude))
                     }
                 },
-                label = { Text("Coordinates (Latitude, Longitude)") },
+                label = { Text("احداثيات") },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
@@ -166,7 +170,7 @@ fun AddScreen(modifier: Modifier = Modifier) {
             )
         }
 
-        // ✅ Image Picker UI (Upload Box)
+        // Upload Box
         ImageUploadBox(
             imageUri = imageUri.value,
             onClick = { imagePickerLauncher.launch("image/*") }
@@ -178,7 +182,10 @@ fun AddScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = KhadraGreen)
         ) {
-            Text("Submit")
+            Text(
+                text = "غرس",
+                fontWeight = FontWeight.Bold
+            )
         }
 
         // Loading & Error Messages
@@ -192,12 +199,7 @@ fun AddScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
         }
-        if (state.value.isSuccess) {
-            Text(
-                text = "Tree added successfully!",
-                color = KhadraGreen,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
-        }
+
     }
+
 }
