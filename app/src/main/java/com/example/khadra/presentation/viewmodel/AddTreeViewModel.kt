@@ -92,11 +92,10 @@ class AddTreeViewModel @Inject constructor(
     }
 }
 
-// State for the Add Tree form
 data class AddTreeState(
     val name: String = "",
     val type: String = "",
-    val status: String = "",
+    val status: String = "Healthy",
     val coordinates: Pair<Double, Double> = Pair(0.0, 0.0),
     val imageUrl: String = "",
     val isLoading: Boolean = false,
