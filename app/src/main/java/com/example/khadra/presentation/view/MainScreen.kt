@@ -1,6 +1,7 @@
 package com.example.khadra.presentation.view
 
 
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.example.khadra.R
 import com.example.khadra.data.model.NavItem
 import com.example.khadra.data.model.Tree
@@ -46,8 +48,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 
 
 @Composable
-
 fun MainScreen(
+    treeViewModel: TreeViewModel,
     modifier: Modifier = Modifier
 ) {
     val navItemsList = listOf(
@@ -60,11 +62,12 @@ fun MainScreen(
 
 
 
-    var selectedIndex by remember { mutableIntStateOf(4) }
+    var selectedIndex by remember { mutableIntStateOf(4) } // Default screen is Home
+    val mod = modifier.fillMaxWidth()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.White,
-         topBar = { TopBar(selectedIndex) },
+        topBar = { TopBar(selectedIndex) },
         bottomBar = {
             Box(
                 modifier = Modifier
@@ -128,26 +131,26 @@ fun MainScreen(
     ) { innerPadding ->
         ContentScreen(
             modifier = Modifier.padding(innerPadding),
-            selectedIndex = selectedIndex
+            selectedIndex = selectedIndex,
+            treeViewModel = treeViewModel
         )
     }
 }
 
 @Composable
-fun ContentScreen(modifier: Modifier = Modifier, selectedIndex: Int) {
+fun ContentScreen(modifier: Modifier = Modifier, selectedIndex: Int, treeViewModel: TreeViewModel) {
     when (selectedIndex) {
         0 -> ProfileScreen()
         1 -> MapScreen()
         2 -> AddScreen()
         3 -> IrrigationScreen()
-        4 -> HomeScreen(modifier)
+        4 -> HomeScreen(modifier,treeViewModel) // ✅ Fixed: No infinite recursion
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(modifier: Modifier) {
-
-    val treeViewModel = hiltViewModel<TreeViewModel>()
+fun HomeScreen(modifier: Modifier, treeViewModel: TreeViewModel) {
     val uiState by treeViewModel.uiState.collectAsState()
     val treesList = uiState.trees
     var searchQuery by remember { mutableStateOf("") }
@@ -158,7 +161,15 @@ fun HomeScreen(modifier: Modifier) {
                 tree.status.contains(searchQuery, ignoreCase = true)
     }
 
+    // State to track the selected tree
     var selectedTree by remember { mutableStateOf<Tree?>(null) }
+
+    // Show Tree Details Dialog or Screen if a tree is selected
+    selectedTree?.let { tree ->
+        TreeDetailsDialog(tree = tree) {
+            selectedTree = null // Close the details dialog or screen
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -166,12 +177,12 @@ fun HomeScreen(modifier: Modifier) {
             .padding(top = 140.dp),
     ) {
         Column {
-
+            // Search Bar (TextField)
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { sq -> searchQuery = sq },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp),
-                shape = RoundedCornerShape(32.dp),
+                shape = RoundedCornerShape(32.dp), // Matches Box clipping
                 singleLine = true,
                 placeholder = { Text("Search...", fontSize = 16.sp, color = Color.Black) },
                 trailingIcon = {
@@ -201,6 +212,7 @@ fun HomeScreen(modifier: Modifier) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Loading State
             if (uiState.isLoading) {
                 Box(
                     modifier = Modifier
@@ -217,21 +229,21 @@ fun HomeScreen(modifier: Modifier) {
             } else {
                 if (searchQuery.isNotEmpty() && filteredTrees.isNotEmpty()) {
                     LazyColumn(modifier = Modifier.fillMaxSize().padding(bottom = 110.dp)) {
-                        items(filteredTrees)
-                        { tree ->
-                            TreeCard(tree = tree, onCardClick = { selectedTree = it })
+                        items(filteredTrees) { tree ->
+                            TreeCard(tree = tree, onCardClick = { selectedTree = it }) // Pass tree and click handler
                             Spacer(Modifier.height(12.dp))
                         }
-
                     }
                 } else if (filteredTrees.isEmpty()) {
                     Column(modifier = Modifier.fillMaxSize().padding(bottom = 100.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(text = "No Tree Found !", fontSize = 32.sp, fontWeight = FontWeight.Light, color = Color.Red)
+                        Image(modifier = Modifier.size(80.dp), painter = painterResource(R.drawable.ic_error), contentDescription = "Error")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(text = "No Results Found!", fontSize = 32.sp, fontWeight = FontWeight.Light, color = Color.Gray)
                     }
                 } else {
                     LazyColumn(modifier = Modifier.fillMaxSize().padding(bottom = 110.dp)) {
                         items(treesList) { tree ->
-                            TreeCard(tree = tree, onCardClick = { selectedTree = it })
+                            TreeCard(tree = tree, onCardClick = { selectedTree = it }) // Pass tree and click handler
                             Spacer(Modifier.height(12.dp))
                         }
                     }
@@ -240,7 +252,28 @@ fun HomeScreen(modifier: Modifier) {
         }
     }
 }
-
+@Composable
+fun TreeDetailsDialog(tree: Tree, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Tree Details") },
+        text = {
+            Column {
+                Text("Tree Name: ${tree.name}")
+                Text("Status: ${tree.status}")
+                Text("Type: ${tree.type}")
+                Text("Location: ${tree.coordinates.first}, ${tree.coordinates.second}")
+                Text("Last Irrigation: ${tree.lastIrrigationAction}")
+                // Add more fields as needed
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Close")
+            }
+        }
+    )
+}
 
 
 @Composable
@@ -279,10 +312,10 @@ when (selectedIndex){
                 ))
             Text(
                 text = when (selectedIndex) {
-                    0 -> "Profile"
-                    1 -> "Nearby Trees"
-                    2 -> " Plant a Tree"
-                    3 -> "  I need water"
+                    0 -> "الحساب الشخصي"
+                    1 -> "الاشجار القريبة منك"
+                    2 -> "غرس شجرة"
+                    3 -> "اشجار تحتاج السقي"
                     4 -> "خضراء"
                     else -> { "" }
                 },
@@ -366,7 +399,7 @@ fun TreeCard(tree: Tree, onCardClick: (Tree) -> Unit) {
 
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                             Text(
-                                text = " بلدية البياضة، الوادي، الوادي",
+                                text = tree.location,
                                 fontSize = 11.sp,
                                 color = Color.Gray,
                                 textAlign = TextAlign.End,
@@ -382,7 +415,7 @@ fun TreeCard(tree: Tree, onCardClick: (Tree) -> Unit) {
 
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                             Text(
-                                text = "99 شجرة :Islam Slimani",
+                                text = "هاله: 70 شجرة",
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Light,
                                 color = Color.Gray
@@ -414,12 +447,20 @@ fun TreeCard(tree: Tree, onCardClick: (Tree) -> Unit) {
                         .padding(8.dp)
                         .border(2.dp, color = Color.Black.copy(alpha = 0.25f), shape = RoundedCornerShape(20.dp))
                 ) {
-                    AsyncImage(
-                        model = tree.urlImage, // Use tree's image URL
-                        contentDescription = "Tree Image",
-                        modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(20.dp)), // Apply rounded corners
-                        contentScale = ContentScale.Crop // Ensures the image fits inside the Box
-                    )
+                    if (tree.imageUri != Uri.EMPTY)
+                        Image(
+                            painter = rememberAsyncImagePainter(tree.imageUri),
+                            contentDescription = "Selected Image",
+                            modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(20.dp)), // Apply rounded corners
+                            contentScale = ContentScale.Crop // Ensures the image fits inside the Box
+                        )
+                    else
+                        AsyncImage(
+                            model = tree.urlImage, // Use tree's image URL
+                            contentDescription = "Tree Image",
+                            modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(20.dp)), // Apply rounded corners
+                            contentScale = ContentScale.Crop // Ensures the image fits inside the Box
+                        )
                 }
             }
         }

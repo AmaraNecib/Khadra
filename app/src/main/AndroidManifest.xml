@@ -4,7 +4,6 @@
 
     <!-- Allows the app to access the internet, required for network operations like loading images from URLs -->
     <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:name=".KhadraApp"
         android:allowBackup="true"

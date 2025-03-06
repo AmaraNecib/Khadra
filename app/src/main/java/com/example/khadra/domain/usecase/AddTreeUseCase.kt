@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class AddTreeUseCase @Inject constructor(private val treeRepository: TreeRepository) {
 
-    suspend operator fun invoke (tree: Tree) {
+    suspend fun addTree(tree: Tree) {
         treeRepository.addTree(tree)
     }
 }
