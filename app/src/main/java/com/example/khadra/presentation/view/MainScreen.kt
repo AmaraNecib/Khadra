@@ -1,6 +1,6 @@
-package com.example.khadra.view
+package com.example.khadra.presentation.view
 
-import android.util.Log
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,37 +24,30 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.khadra.R
-import com.example.khadra.model.NavItem
-import com.example.khadra.model.Tree
+import com.example.khadra.data.model.NavItem
+import com.example.khadra.data.model.Tree
 import com.example.khadra.ui.theme.KhadraGreen
-import com.example.khadra.ui.theme.KhadraTheme
-import com.example.khadra.viewmodel.TreeViewModel
+import com.example.khadra.presentation.viewmodel.TreeViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 
 @Composable
 
 fun MainScreen(
-    treeViewModel: TreeViewModel,
     modifier: Modifier = Modifier
 ) {
     val navItemsList = listOf(
@@ -135,25 +128,26 @@ fun MainScreen(
     ) { innerPadding ->
         ContentScreen(
             modifier = Modifier.padding(innerPadding),
-            selectedIndex = selectedIndex,
-            treeViewModel = treeViewModel
+            selectedIndex = selectedIndex
         )
     }
 }
 
 @Composable
-fun ContentScreen(modifier: Modifier = Modifier, selectedIndex: Int, treeViewModel: TreeViewModel) {
+fun ContentScreen(modifier: Modifier = Modifier, selectedIndex: Int) {
     when (selectedIndex) {
         0 -> ProfileScreen()
         1 -> MapScreen()
         2 -> AddScreen()
         3 -> IrrigationScreen()
-        4 -> HomeScreen(modifier,treeViewModel)
+        4 -> HomeScreen(modifier)
     }
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(modifier: Modifier, treeViewModel: TreeViewModel) {
+fun HomeScreen(modifier: Modifier) {
+
+    val treeViewModel = hiltViewModel<TreeViewModel>()
     val uiState by treeViewModel.uiState.collectAsState()
     val treesList = uiState.trees
     var searchQuery by remember { mutableStateOf("") }
@@ -223,10 +217,12 @@ fun HomeScreen(modifier: Modifier, treeViewModel: TreeViewModel) {
             } else {
                 if (searchQuery.isNotEmpty() && filteredTrees.isNotEmpty()) {
                     LazyColumn(modifier = Modifier.fillMaxSize().padding(bottom = 110.dp)) {
-                        items(filteredTrees) { tree ->
+                        items(filteredTrees)
+                        { tree ->
                             TreeCard(tree = tree, onCardClick = { selectedTree = it })
                             Spacer(Modifier.height(12.dp))
                         }
+
                     }
                 } else if (filteredTrees.isEmpty()) {
                     Column(modifier = Modifier.fillMaxSize().padding(bottom = 100.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {

@@ -1,4 +1,4 @@
-package com.example.khadra.model
+package com.example.khadra.data.model
 
 import androidx.compose.ui.graphics.painter.Painter
 

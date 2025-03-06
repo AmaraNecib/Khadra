@@ -10,9 +10,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.example.khadra.ui.theme.KhadraTheme
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.khadra.view.MainScreen
-import com.example.khadra.viewmodel.TreeViewModel
+import com.example.khadra.presentation.view.MainScreen
+import com.example.khadra.presentation.viewmodel.TreeViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
 
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,10 +24,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             KhadraTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val treeViewModel = viewModel<TreeViewModel>()
 
                     MainScreen(
-                        treeViewModel,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

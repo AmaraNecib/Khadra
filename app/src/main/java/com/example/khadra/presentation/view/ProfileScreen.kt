@@ -1,4 +1,4 @@
-package com.example.khadra.view
+package com.example.khadra.presentation.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,7 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun IrrigationScreen(modifier: Modifier = Modifier) {
+fun ProfileScreen(modifier: Modifier = Modifier) {
     Column (modifier=Modifier.fillMaxSize(),
         verticalArrangement =  Arrangement.Center,
         horizontalAlignment =  Alignment.CenterHorizontally)
