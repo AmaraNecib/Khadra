@@ -39,7 +39,7 @@ class TreeTypeRepositoryImpl @Inject constructor() :TreeTypeRepository{
     private val _treeTypeFlow = MutableSharedFlow<List<TreeType>>(replay = 1)
 
     init {
-        // Emit the initial list.
+        // Emit the initial list
         _treeTypeFlow.tryEmit(_treeTypes.toList())
     }
 

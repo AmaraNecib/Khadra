@@ -24,8 +24,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             KhadraTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    val treeViewModel = viewModel<TreeViewModel>()
 
                     MainScreen(
+                        treeViewModel,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
