@@ -48,6 +48,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 @Composable
 
 fun MainScreen(
+    treeViewModel: TreeViewModel,
     modifier: Modifier = Modifier
 ) {
     val navItemsList = listOf(
@@ -78,7 +79,7 @@ fun MainScreen(
                     }
                     .fillMaxWidth()
             ) {
-                NavigationBar(containerColor = Color.White, tonalElevation = 0.dp) {
+                NavigationBar(containerColor = Color.Gray, tonalElevation = 0.dp) {
                     navItemsList.forEachIndexed { index, item ->
                         if (index == 2) {
                             // Custom Add Button (Bigger + Colored)
@@ -128,26 +129,26 @@ fun MainScreen(
     ) { innerPadding ->
         ContentScreen(
             modifier = Modifier.padding(innerPadding),
-            selectedIndex = selectedIndex
+            selectedIndex = selectedIndex,
+            treeViewModel = treeViewModel
         )
     }
 }
 
 @Composable
-fun ContentScreen(modifier: Modifier = Modifier, selectedIndex: Int) {
+fun ContentScreen(modifier: Modifier = Modifier, selectedIndex: Int, treeViewModel: TreeViewModel) {
     when (selectedIndex) {
         0 -> ProfileScreen()
         1 -> MapScreen()
         2 -> AddScreen()
         3 -> IrrigationScreen()
-        4 -> HomeScreen(modifier)
+        4 -> HomeScreen(modifier,treeViewModel)
     }
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(modifier: Modifier) {
+fun HomeScreen(modifier: Modifier, treeViewModel: TreeViewModel) {
 
-    val treeViewModel = hiltViewModel<TreeViewModel>()
     val uiState by treeViewModel.uiState.collectAsState()
     val treesList = uiState.trees
     var searchQuery by remember { mutableStateOf("") }
@@ -159,6 +160,12 @@ fun HomeScreen(modifier: Modifier) {
     }
 
     var selectedTree by remember { mutableStateOf<Tree?>(null) }
+
+    selectedTree?.let { tree ->
+        TreeDetailsDialog(tree = tree) {
+            selectedTree = null // Close the details dialog or screen
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -240,6 +247,27 @@ fun HomeScreen(modifier: Modifier) {
         }
     }
 }
+@Composable
+fun TreeDetailsDialog(tree: Tree, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Tree Details") },
+        text = {
+            Column {
+                Text("Tree Name: ${tree.name}")
+                Text("Status: ${tree.status}")
+                Text("Type: ${tree.type}")
+                Text("Location: ${tree.coordinates.first}, ${tree.coordinates.second}")
+                Text("Last Irrigation: ${tree.lastIrrigationAction}")
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Close")
+            }
+        }
+    )
+}
 
 
 
@@ -279,10 +307,10 @@ when (selectedIndex){
                 ))
             Text(
                 text = when (selectedIndex) {
-                    0 -> "Profile"
-                    1 -> "Nearby Trees"
-                    2 -> " Plant a Tree"
-                    3 -> "  I need water"
+                    0 -> "الحساب الشخصي"
+                    1 -> "الاشجار القريبة منك"
+                    2 -> " غرس شجرة"
+                    3 -> "  اشجار تحتاج سقي"
                     4 -> "خضراء"
                     else -> { "" }
                 },
@@ -366,7 +394,7 @@ fun TreeCard(tree: Tree, onCardClick: (Tree) -> Unit) {
 
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                             Text(
-                                text = " بلدية البياضة، الوادي، الوادي",
+                                text = " الوادي",
                                 fontSize = 11.sp,
                                 color = Color.Gray,
                                 textAlign = TextAlign.End,
@@ -382,7 +410,7 @@ fun TreeCard(tree: Tree, onCardClick: (Tree) -> Unit) {
 
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                             Text(
-                                text = "99 شجرة :Islam Slimani",
+                                text ="بن عتوس نوالدين: 32 شجرة",
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Light,
                                 color = Color.Gray
