@@ -43,11 +43,12 @@ import com.example.khadra.data.model.Tree
 import com.example.khadra.ui.theme.KhadraGreen
 import com.example.khadra.presentation.viewmodel.TreeViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-
-
+import android.net.Uri
+import coil.compose.rememberAsyncImagePainter
 @Composable
 
 fun MainScreen(
+    treeViewModel: TreeViewModel,
     modifier: Modifier = Modifier
 ) {
     val navItemsList = listOf(

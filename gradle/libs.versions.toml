@@ -11,7 +11,7 @@ composeBom = "2024.04.01"
 hiltVersion = "2.51.1"
 hiltNavigation = "1.2.0"
 kaptVersion = "2.1.10"
-navigatinCompose = "2.8.7"
+navigationCompose = "2.8.7"
 gms = "4.4.2"
 firebase = "33.9.0"
 firestore = "25.1.2"
@@ -40,7 +40,7 @@ io-coil-kt-compose = { group = "io.coil-kt", name = "coil-compose", version = "2
 dagger-hilt = {group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion"}
 dagger-hilt-compiler = {group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltVersion"}
 androidx-hilt-navigation-compose = {group="androidx.hilt",name = "hilt-navigation-compose", version.ref = "hiltNavigation"}
-androidx-navigation-compose = { group="androidx.navigation",name="navigation-compose",version.ref = "navigatinCompose"}
+androidx-navigation-compose = { group="androidx.navigation",name="navigation-compose",version.ref = "navigationCompose"}
 
 
 google-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase" }

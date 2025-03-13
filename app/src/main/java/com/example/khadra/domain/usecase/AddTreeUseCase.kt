@@ -9,4 +9,5 @@ class AddTreeUseCase @Inject constructor(private val treeRepository: TreeReposit
     suspend operator fun invoke (tree: Tree) {
         treeRepository.addTree(tree)
     }
+
 }
