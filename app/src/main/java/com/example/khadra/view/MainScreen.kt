@@ -1,6 +1,5 @@
 package com.example.khadra.view
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,35 +26,27 @@ import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.khadra.R
 import com.example.khadra.model.NavItem
 import com.example.khadra.model.Tree
 import com.example.khadra.ui.theme.KhadraGreen
-import com.example.khadra.ui.theme.KhadraTheme
 import com.example.khadra.viewmodel.TreeViewModel
 
 
 @Composable
 
 fun MainScreen(
-    treeViewModel: TreeViewModel,
-    modifier: Modifier = Modifier
+    treeViewModel: TreeViewModel
 ) {
     val navItemsList = listOf(
         NavItem("Profile", painterResource(R.drawable.ic_outline_person_outline_24)),
@@ -71,7 +62,7 @@ fun MainScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.White,
-         topBar = { TopBar(selectedIndex) },
+        topBar = { TopBar(selectedIndex) },
         bottomBar = {
             Box(
                 modifier = Modifier
@@ -134,26 +125,29 @@ fun MainScreen(
         }
     ) { innerPadding ->
         ContentScreen(
-            modifier = Modifier.padding(innerPadding),
+            modifier = Modifier.padding(innerPadding), // تمرير الـ padding هنا
             selectedIndex = selectedIndex,
             treeViewModel = treeViewModel
         )
+
     }
 }
 
 @Composable
 fun ContentScreen(modifier: Modifier = Modifier, selectedIndex: Int, treeViewModel: TreeViewModel) {
-    when (selectedIndex) {
-        0 -> ProfileScreen()
-        1 -> MapScreen()
-        2 -> AddScreen()
-        3 -> IrrigationScreen()
-        4 -> HomeScreen(modifier,treeViewModel)
+    Column(modifier = modifier) { // استخدام modifier هنا
+        when (selectedIndex) {
+            0 -> ProfileScreen()
+            1 -> MapScreen()
+            2 -> AddScreen()
+            3 -> IrrigationScreen()
+            4 -> HomeScreen(treeViewModel)
+        }
     }
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(modifier: Modifier, treeViewModel: TreeViewModel) {
+fun HomeScreen(treeViewModel: TreeViewModel) {
     val uiState by treeViewModel.uiState.collectAsState()
     val treesList = uiState.trees
     var searchQuery by remember { mutableStateOf("") }
@@ -188,11 +182,13 @@ fun HomeScreen(modifier: Modifier, treeViewModel: TreeViewModel) {
                         tint = Color.Black
                     )
                 },
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent, // Transparent for image visibility
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Gray,
                     unfocusedIndicatorColor = Color.Gray
-                ),
+                )
+                ,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Search
@@ -251,14 +247,14 @@ fun HomeScreen(modifier: Modifier, treeViewModel: TreeViewModel) {
 fun TopBar(selectedIndex:Int) {
 
     var displayTopBar by remember { mutableStateOf(false) }
-when (selectedIndex){
-    0-> displayTopBar=false
-    1-> displayTopBar=true
-    2-> displayTopBar=false
-    3-> displayTopBar=false
-    4-> displayTopBar=true
+    when (selectedIndex){
+        0-> displayTopBar=false
+        1-> displayTopBar=true
+        2-> displayTopBar=false
+        3-> displayTopBar=false
+        4-> displayTopBar=true
 
-}
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),

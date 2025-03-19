@@ -5,7 +5,12 @@
     <!-- Allows the app to access the internet, required for network operations like loading images from URLs -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+
+
+
+
     <application
+
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -29,6 +34,11 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDpSY6SBhRthbfIHZe6KXpK0xLC33jhEhM"/>
+
+
     </application>
 
 </manifest>
