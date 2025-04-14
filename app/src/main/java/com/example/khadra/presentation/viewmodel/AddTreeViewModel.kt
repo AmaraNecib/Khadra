@@ -109,7 +109,7 @@ class AddTreeViewModel @Inject constructor(
                     createdAt = Date(),
                     updatedAt = Date()
                 )
-                addTreeUseCase.addTree(tree)
+                addTreeUseCase(tree)
                 _state.value = currentState.copy(isSuccess = true, isLoading = false)
             } catch (e: Exception) {
                 _state.value = currentState.copy(error = "Failed to add tree", isLoading = false)
