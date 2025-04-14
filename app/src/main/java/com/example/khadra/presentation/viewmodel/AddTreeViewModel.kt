@@ -83,7 +83,6 @@ class AddTreeViewModel @Inject constructor(
     private fun canSubmit(): Boolean {
         val currentState = _state.value
         return currentState.name.isNotBlank() && currentState.imageUri!= Uri.EMPTY&&
-                isArabic(currentState.name) &&
                 currentState.type.isNotBlank()&&
                 currentState.type.lowercase() in listOf("fruit", "ornamental", "evergreen", "palm", "vegetable") &&
                 currentState.status.lowercase() in listOf("critical", "low", "moderate", "healthy")&&
