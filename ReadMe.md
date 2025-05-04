@@ -1,3 +1,4 @@
+
 # 🌱 Khadra - Volunteer Plant Irrigation App
 
 [![Kotlin Version](https://img.shields.io/badge/Kotlin-2.0.0-blue.svg)](https://kotlinlang.org)
@@ -79,4 +80,3 @@ For questions or suggestions:
 
 **Project Maintainer**: [Amara Necib]   
 **GitHub Issues**: [Create New Issue](#https://github.com/AmaraNecib/Khadra/issues)
-

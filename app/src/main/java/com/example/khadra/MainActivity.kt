@@ -3,122 +3,82 @@ package com.example.khadra
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.khadra.presentation.view.AuthScreen
+import com.example.khadra.presentation.view.MainScreen
+import com.example.khadra.presentation.view.TreeDetailsScreen
+import com.example.khadra.presentation.viewmodel.AuthViewModel
+import com.example.khadra.presentation.viewmodel.TreeViewModel
 import com.example.khadra.ui.theme.KhadraTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             KhadraTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // TODO 0: Call the UI composable function
-                    //FirstUI(modifier = Modifier.padding(innerPadding))
-                    Greeting(name = "Amara", modifier = Modifier.padding(innerPadding))
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    val navController = rememberNavController()
+                    val authViewModel = hiltViewModel<AuthViewModel>()
+                    val treeViewModel = hiltViewModel<TreeViewModel>()
+
+                    NavHost(
+                        navController = navController,
+                        startDestination = "auth"
+                    ) {
+                        composable("auth") {
+                            AuthScreen(
+                                onNavigateToMain = {
+                                    navController.navigate("main") {
+                                        popUpTo("auth") { inclusive = true }
+                                    }
+                                },
+                                viewModel = authViewModel
+                            )
+                        }
+
+                        composable("main") {
+                            MainScreen(
+                                treeViewModel = treeViewModel,
+                                onNavigateToTreeDetails = { treeId ->
+                                    navController.navigate("tree_details/$treeId")
+                                },
+                                modifier = Modifier,
+                                onNavigateToAuth = {
+                                    navController.navigate("auth") {
+                                        popUpTo("main") { inclusive = true }
+                                    }
+                                }
+                            )
+                        }
+
+                        composable(
+                            route = "tree_details/{treeId}",
+                            arguments = listOf(navArgument("treeId") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val treeId = backStackEntry.arguments?.getString("treeId")
+                            TreeDetailsScreen(
+                                treeId = treeId ?: "",
+                                onNavigateBack = { navController.navigateUp() },
+                                viewModel = treeViewModel,
+                                onEditTree = {  }
+                            )
+                        }
+                    }
                 }
-            }
-        }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Composable
-fun FirstUI(modifier: Modifier = Modifier) {
-    // TODO 1: Create state variables for text input and items list
-
-    Column(
-        modifier = modifier
-            .padding(25.dp)
-            .fillMaxSize()
-    ) {
-        SearchInputBar(
-            textValue = "", // TODO 2: Connect to state
-            onTextValueChange = { /* TODO 3: Update text state */ },
-            onAddItem = { /* TODO 4: Add item to list */ },
-            onSearch = { /* TODO 5: Implement search functionality */ }
-        )
-
-        // TODO 6: Display list of items using CardsList composable
-        CardsList(emptyList())
-    }
-}
-
-@Composable
-fun SearchInputBar(
-    textValue: String,
-    onTextValueChange: (String) -> Unit,
-    onAddItem: (String) -> Unit,
-    onSearch: (String) -> Unit
-) {
-    Column {
-        TextField(
-            value = textValue,
-            onValueChange = onTextValueChange,
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Enter text...") }
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(onClick = { /* TODO 7: Handle add button click */ }) {
-                Text("Add")
-            }
-
-            Button(onClick = { /* TODO 8: Handle search button click */ }) {
-                Text("Search")
-            }
-        }
-    }
-}
-
-@Composable
-fun CardsList(displayedItems: List<String>) {
-    // TODO 9: Implement LazyColumn to display items
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        // TODO 10: Create cards for each item in the list
-        items(displayedItems) { item ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-            ) {
-                Text(text = "Sample Item", modifier = Modifier.padding(16.dp))
             }
         }
     }

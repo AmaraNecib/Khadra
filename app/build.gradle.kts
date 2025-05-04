@@ -2,6 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.dagger.hilt.plugin)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.serialization)
+    //alias(libs.plugins.google.services)
 }
 
 android {
@@ -43,7 +47,32 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    // ViewModel Kotlin extensions for easier ViewModel usage
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    // Compose integration for ViewModel to use ViewModel in composable functions
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    // Compose integration with Activity for setting up Compose UI in Activities
     implementation(libs.androidx.activity.compose)
+
+    // Coil image loading library for Compose to load and display images efficiently
+    implementation(libs.io.coil.kt.compose)
+
+    //Dagger Hilt
+    implementation(libs.dagger.hilt)
+    kapt(libs.dagger.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    //Navigation compose
+    implementation(libs.androidx.navigation.compose)
+
+
+    //firebase
+
+//    implementation(platform(libs.google.firebase.bom))
+//    implementation(libs.google.firebase.analytics.ktx)
+//    implementation(libs.google.firebase.auth.ktx)
+//    implementation(libs.google.firebase.firestore.ktx)
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
@@ -56,4 +85,19 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.1.1"))
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.github.jan-tennert.supabase:storage-kt")
+    implementation("io.github.jan-tennert.supabase:auth-kt")
+    implementation("io.github.jan-tennert.supabase:realtime-kt")
+    implementation("io.ktor:ktor-client-okhttp:3.0.0-rc-1")
+
+    // Location Services
+    implementation("com.google.android.gms:play-services-location:21.1.0")
+
+    implementation("com.google.maps.android:maps-compose:2.11.4")
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 }
